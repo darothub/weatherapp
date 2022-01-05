@@ -1,0 +1,77 @@
+def kotlin_version = '1.6.10'
+def fragment_version = '1.4.0'
+def lifecycle_version = '2.4.0'
+def retrofit_version = "2.9.0"
+def hilt_version = '2.40.5'
+def coil_version = "1.2.1"
+def sdp_version= "1.0.6"
+def junit_version = "4.13.2"
+def test_core_version = '1.4.0'
+def mockito_version = '4.2.0'
+def junit_ext_version = '1.1.3'
+def espresso_version = '3.4.0'
+def desugar_lib_version = "1.1.5"
+def logger_version = '5.0.0-alpha.3'
+def excuse_me_version ="0.9.5"
+
+
+
+ext {
+    libs = [
+            "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+            'androidx.core:core-ktx:1.7.0',
+            'androidx.appcompat:appcompat:1.4.0',
+            'com.google.android.material:material:1.4.0',
+            'androidx.constraintlayout:constraintlayout:2.1.2',
+            "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version",
+            "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version",
+            "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version",
+            "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version",
+            "com.squareup.retrofit2:converter-gson:$retrofit_version",
+            "com.squareup.retrofit2:retrofit:$retrofit_version",
+            "com.google.dagger:hilt-android:$hilt_version",
+
+            //coil
+            "io.coil-kt:coil:$coil_version",
+
+            //permission
+            "com.github.AraujoJordan:ExcuseMe:$excuse_me_version",
+
+            //dimens
+            "com.intuit.sdp:sdp-android:$sdp_version",
+
+            //OkHttp
+            "com.squareup.okhttp3:logging-interceptor:$logger_version"
+    ]
+    testLibraries =[
+            //testImplementation
+            "junit:junit:$junit_version",
+            //Robo-electric
+            "androidx.test:core:$test_core_version",
+            // Mockito framework
+            "org.mockito:mockito-core:$mockito_version",
+            "com.google.dagger:hilt-android-testing:$hilt_version",
+            'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0-native-mt'
+    ]
+    androidTestLibraries =[
+            "androidx.test.ext:junit:$junit_ext_version",
+            "androidx.test.espresso:espresso-core:$espresso_version",
+            "androidx.test.espresso:espresso-contrib:$espresso_version",
+            "com.google.dagger:hilt-android-testing:$hilt_version"
+    ]
+
+    debugLibraries =[
+            "androidx.fragment:fragment-testing:$fragment_version"
+    ]
+    coreLibDesugaring =[
+            "com.android.tools:desugar_jdk_libs:$desugar_lib_version"
+    ]
+    kaptLibs =[
+             "com.google.dagger:hilt-compiler:$hilt_version",
+            "com.google.dagger:hilt-android-compiler:$hilt_version"
+    ]
+    kaptAndroidTestLibs=[
+            "com.google.dagger:hilt-android-compiler:$hilt_version"
+    ]
+
+}
