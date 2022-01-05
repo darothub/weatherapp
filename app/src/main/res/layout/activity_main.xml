@@ -20,12 +20,12 @@
         android:id="@+id/main_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/purple_500"
         app:layout_constraintTop_toBottomOf="@id/fragment"
         app:tabIndicatorHeight="3dp"
-
+        app:tabTextColor="@android:color/darker_gray"
         app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        app:tabSelectedTextColor="@color/purple_500"/>
+        app:tabSelectedTextColor="@color/white"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp"

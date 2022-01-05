@@ -15,12 +15,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val view = binding.root
         setContentView(view)
+
         adapter = ViewPagerAdapter(this, 3) { position ->
             TabFragment.newInstance(position + 1)
         }
         binding.vp.adapter = adapter
         TabLayoutMediator(binding.mainTabLayout, binding.vp) { tab, position ->
-            tab.text = "OBJECT ${(position + 1)}"
+            when (position) {
+                0 -> tab.text = "Today"
+                1 -> tab.text = "Tomorrow"
+                2 -> tab.text = "Later"
+            }
         }.attach()
 
 //        val s = SpannableString("25oC")

@@ -18,18 +18,15 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class TabFragment : Fragment(R.layout.fragment_tab) {
-    // TODO: Rename and change types of parameters
     private val binding by viewBinding(FragmentTabBinding::bind)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-            binding.tv.text = getInt(ARG_OBJECT).toString()
+//            binding.tv.text = getInt(ARG_OBJECT).toString()
         }
+
     }
 
     companion object {
