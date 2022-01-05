@@ -2,6 +2,7 @@ def kotlin_version = '1.6.10'
 def fragment_version = '1.4.0'
 def lifecycle_version = '2.4.0'
 def retrofit_version = "2.9.0"
+def navigation_version = '2.3.5'
 def hilt_version = '2.40.5'
 def coil_version = "1.2.1"
 def sdp_version= "1.0.6"
@@ -23,6 +24,9 @@ ext {
             'androidx.appcompat:appcompat:1.4.0',
             'com.google.android.material:material:1.4.0',
             'androidx.constraintlayout:constraintlayout:2.1.2',
+            'androidx.legacy:legacy-support-v4:1.0.0',
+            "androidx.navigation:navigation-fragment-ktx:$navigation_version",
+            "androidx.navigation:navigation-ui-ktx:$navigation_version",
             "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version",
             "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version",
             "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version",
