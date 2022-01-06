@@ -20,13 +20,11 @@ private const val ARG_PARAM2 = "param2"
 class TabFragment : Fragment(R.layout.fragment_tab) {
     private val binding by viewBinding(FragmentTabBinding::bind)
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
 //            binding.tv.text = getInt(ARG_OBJECT).toString()
         }
-
     }
 
     companion object {

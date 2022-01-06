@@ -11,5 +11,5 @@ interface ApiService {
         @Query("lon") lon: String,
         @Query("exclude") exclude: String,
         @Query("appid") app_id: String
-    ):WeatherResponse
+    ): WeatherResponse
 }

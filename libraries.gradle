@@ -35,6 +35,8 @@ ext {
             "com.squareup.retrofit2:converter-gson:$retrofit_version",
             "com.squareup.retrofit2:retrofit:$retrofit_version",
             "com.google.dagger:hilt-android:$hilt_version",
+            'com.google.android.gms:play-services-base:18.0.1',
+            'com.google.android.gms:play-services-location:19.0.1',
 
             //room
             "androidx.room:room-runtime:$room_version",

@@ -1,33 +1,32 @@
 package com.darothub.weatherapp.data.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import dagger.Provides
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Singleton
+import androidx.room.*
+import com.darothub.weatherapp.model.WeatherResponse
 
 @Database(
-    entities = [Climate::class],
-    version = 1,
+    entities = [WeatherResponse::class],
+    version = 2,
     exportSchema = false
 )
-abstract class WeatherDatabase: RoomDatabase() {
+@TypeConverters(Converters::class)
+abstract class WeatherDatabase : RoomDatabase() {
     abstract fun climateDao(): ClimateDao
 
-   companion object DbModule {
-       private var instance: WeatherDatabase? = null
-       @Synchronized
-       fun getInstance(ctx: Context): WeatherDatabase {
-           if(instance == null)
-               instance = Room.databaseBuilder(ctx.applicationContext, WeatherDatabase::class.java,
-                   "weatherdb")
-                   .fallbackToDestructiveMigration()
-                   .build()
+    companion object {
+        @Volatile
+        private var instance: WeatherDatabase? = null
+        private val LOCK = Any()
 
-           return instance!!
+        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
+            instance ?: buildDatabase(context).also { instance = it }
+        }
 
-       }
+        private fun buildDatabase(context: Context) = Room.databaseBuilder(
+            context,
+            WeatherDatabase::class.java, "weatherdb"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

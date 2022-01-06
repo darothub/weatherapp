@@ -1,12 +1,10 @@
 package com.darothub.weatherapp.ui
 
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.darothub.weatherapp.data.database.Climate
 import com.darothub.weatherapp.databinding.ForecastItemLayoutBinding
 
-class DataViewHolder(private val binding: ForecastItemLayoutBinding) : RecyclerView.ViewHolder(binding.root){
+class DataViewHolder(private val binding: ForecastItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bindTo(climate: Climate) {
         binding.apply {
             temp.text = climate.temp.toString()
@@ -16,8 +14,6 @@ class DataViewHolder(private val binding: ForecastItemLayoutBinding) : RecyclerV
             humidity.text = climate.humidity.toString()
             sunrise.text = climate.sunrise.toString()
             sunset.text = climate.sunset.toString()
-
         }
-
     }
 }

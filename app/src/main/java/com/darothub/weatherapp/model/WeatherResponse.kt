@@ -1,8 +1,13 @@
 package com.darothub.weatherapp.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.darothub.weatherapp.data.database.Climate
 
+@Entity
 data class WeatherResponse(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
     val lat: Double,
     val lon: Double,
     val timezone: String,
