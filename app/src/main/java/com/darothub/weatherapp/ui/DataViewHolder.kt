@@ -1,28 +1,16 @@
 package com.darothub.weatherapp.ui
 
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.SuperscriptSpan
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.darothub.weatherapp.data.database.Climate
 import com.darothub.weatherapp.databinding.ForecastItemLayoutBinding
-import com.darothub.weatherapp.helper.convertKelvinToCelsius
-import com.darothub.weatherapp.model.Temp
+import com.darothub.weatherapp.helper.getLongDate
 
 class DataViewHolder(private val binding: ForecastItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bindTo(climate: Climate) {
-        var tempInCelsius = when (climate.temp) {
-            is Double -> convertKelvinToCelsius(climate.temp)
-            is Temp -> convertKelvinToCelsius(climate.temp.min)
-            else -> 0.0
-        }
-        var str = "$tempInCelsius" + "oC"
-        val index = str.indexOf('o')
-        val s = SpannableString(str)
-        s.setSpan(SuperscriptSpan(), index, str.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.apply {
-            temp.text = s
+            temp.textSize = 14f
+            temp.text = getLongDate(climate.dt)
             description.text = climate.weather[0].description
             wind.text = "Wind: ${climate.windSpeed}m/s"
             pressure.text = "Pressure: ${climate.pressure}hPa"

@@ -13,6 +13,8 @@ import com.darothub.weatherapp.MainApplication
 import com.darothub.weatherapp.R
 import com.darothub.weatherapp.databinding.FragmentTabBinding
 import com.darothub.weatherapp.model.QueryRequest
+import com.darothub.weatherapp.model.UIState
+import com.darothub.weatherapp.model.WeatherResponse
 import com.darotpeacedude.eivom.utils.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,17 +46,19 @@ class TabFragment : Fragment(R.layout.fragment_tab) {
                 viewModel.getClimateForecast(data.lat, data.lon, data.dt, data.exclude, data.appid)
                 Log.d("Tab", data.dt.toString())
                 withContext(Dispatchers.Main) {
-                    viewModel.weatherLiveData.observe(
-                        viewLifecycleOwner,
-                        { wr ->
-                            Log.d("TabWR", wr.toString())
-                            recyclerViewAdapter = DataAdapter()
-                            recyclerViewAdapter.setData(wr.hourly)
-                            binding.rcv.adapter = recyclerViewAdapter
-                            binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-                            binding.rcv.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+                    viewModel.weatherLiveData.observe(viewLifecycleOwner) { wrState ->
+                        when (wrState) {
+                            is UIState.Success<*> -> {
+                                val wr = wrState.data as WeatherResponse
+
+                                recyclerViewAdapter = DataAdapter()
+                                recyclerViewAdapter.setData(wr.hourly)
+                                binding.rcv.adapter = recyclerViewAdapter
+                                binding.rcv.layoutManager = LinearLayoutManager(requireContext())
+                                binding.rcv.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+                            }
                         }
-                    )
+                    }
                 }
             }
         }
