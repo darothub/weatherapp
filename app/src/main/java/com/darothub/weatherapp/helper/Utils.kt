@@ -6,9 +6,9 @@ import com.darothub.weatherapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun convertKelvinToCelsius(temp: Double): Double {
-    return "%.2f".format(temp - 273.15).toDouble()
-}
+// fun convertKelvinToCelsius(temp: Double): Double {
+//    return "%.2f".format(temp - 273.15).toDouble()
+// }
 
 fun convertLongToTime(longTime: Long): String {
     val dt = Date(longTime)

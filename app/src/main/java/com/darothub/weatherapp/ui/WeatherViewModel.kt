@@ -1,6 +1,5 @@
 package com.darothub.weatherapp.ui
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.darothub.weatherapp.domain.repository.DataRepository
 import com.darothub.weatherapp.helper.SingleLiveEvent
@@ -11,29 +10,24 @@ class WeatherViewModel(private val repository: DataRepository) : ViewModel() {
     private val _weatherLiveData = SingleLiveEvent<UIState>()
     var weatherLiveData: SingleLiveEvent<UIState> = _weatherLiveData
 
-    suspend fun getClimates(
+    fun getClimates(
         lat: String?,
         lon: String?,
         exclude: String?,
         app_id: String?
     ) {
         _weatherLiveData.postValue(UIState.Loading)
-        repository.getLocalClimates(lat!!, lon!!).apply {
-            viewModelScope.launch {
-                try {
-                    val response = repository.getRemoteClimates(lat, lon, exclude!!, app_id!!)
-                    repository.saveClimate(response)
-                    _weatherLiveData.postValue(UIState.Success(response))
-                    Log.d("Viewmodel", response.daily.toString())
-                } catch (e: Exception) {
-                    _weatherLiveData.postValue(UIState.Error(e))
-                    Log.d("Viewmodel", e.message.toString())
-                }
+        viewModelScope.launch {
+            try {
+                val response = repository.getClimateForeCast(lat.toString(), lon.toString(), exclude.toString(), app_id.toString())
+                _weatherLiveData.postValue(UIState.Success(response))
+            } catch (e: Exception) {
+                _weatherLiveData.postValue(UIState.Error(e))
             }
         }
     }
 
-    suspend fun getClimateForecast(
+    fun getClimateForecast(
         lat: String?,
         lon: String?,
         dt: String?,
@@ -41,17 +35,12 @@ class WeatherViewModel(private val repository: DataRepository) : ViewModel() {
         app_id: String?
     ) {
 
-        repository.getLocalClimateForeCast(lat!!, lon!!).apply {
-            viewModelScope.launch {
-                try {
-                    val response = repository.getRemoteClimateForecast(lat, lon, dt!!, exclude!!, app_id!!)
-                    repository.saveClimate(response)
-                    _weatherLiveData.postValue(UIState.Success(response))
-                    Log.d("ViewmodelForecast", response.daily.toString())
-                } catch (e: Exception) {
-                    _weatherLiveData.postValue(UIState.Error(e))
-                    Log.d("Viewmodel", e.message.toString())
-                }
+        viewModelScope.launch {
+            try {
+                val response = repository.getClimateForecastWithDate(lat.toString(), lon.toString(), dt.toString(), exclude.toString(), app_id.toString())
+                _weatherLiveData.postValue(UIState.Success(response))
+            } catch (e: Exception) {
+                _weatherLiveData.postValue(UIState.Error(e))
             }
         }
     }

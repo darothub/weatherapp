@@ -1,7 +1,6 @@
 package com.darothub.weatherapp.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,6 @@ import com.darothub.weatherapp.model.QueryRequest
 import com.darothub.weatherapp.model.UIState
 import com.darothub.weatherapp.model.WeatherResponse
 import com.darotpeacedude.eivom.utils.viewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * A simple [Fragment] subclass.
@@ -42,22 +37,18 @@ class TabFragment : Fragment(R.layout.fragment_tab) {
 
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             val data = getSerializable(ARG_OBJECT) as QueryRequest
-            CoroutineScope(Dispatchers.IO).launch {
-                viewModel.getClimateForecast(data.lat, data.lon, data.dt, data.exclude, data.appid)
-                Log.d("Tab", data.dt.toString())
-                withContext(Dispatchers.Main) {
-                    viewModel.weatherLiveData.observe(viewLifecycleOwner) { wrState ->
-                        when (wrState) {
-                            is UIState.Success<*> -> {
-                                val wr = wrState.data as WeatherResponse
+            viewModel.getClimateForecast(data.lat, data.lon, data.dt, data.exclude, data.appid)
 
-                                recyclerViewAdapter = DataAdapter()
-                                recyclerViewAdapter.setData(wr.hourly)
-                                binding.rcv.adapter = recyclerViewAdapter
-                                binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-                                binding.rcv.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
-                            }
-                        }
+            viewModel.weatherLiveData.observe(viewLifecycleOwner) { wrState ->
+                when (wrState) {
+                    is UIState.Success<*> -> {
+                        val wr = wrState.data as WeatherResponse
+
+                        recyclerViewAdapter = DataAdapter()
+                        recyclerViewAdapter.setData(wr.hourly)
+                        binding.rcv.adapter = recyclerViewAdapter
+                        binding.rcv.layoutManager = LinearLayoutManager(requireContext())
+                        binding.rcv.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
                     }
                 }
             }

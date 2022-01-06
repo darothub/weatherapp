@@ -10,8 +10,10 @@ import com.darothub.weatherapp.domain.repository.LocalDataManager
 import com.darothub.weatherapp.domain.repository.RemoteDataManager
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class MainApplication : Application() {
 
@@ -21,6 +23,19 @@ class MainApplication : Application() {
     }
     companion object {
         lateinit var dao: ClimateDao
+        fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+            return HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+        }
+        fun provideOkHttpClient(): okhttp3.OkHttpClient {
+            return okhttp3.OkHttpClient.Builder()
+                .addInterceptor(provideLoggingInterceptor())
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(5, TimeUnit.MINUTES)
+                .retryOnConnectionFailure(false)
+                .build()
+        }
         private fun getLocalDataManager() = LocalDataManager(dao)
         private fun getRemoteDataManager() = RemoteDataManager(getRetrofit())
         fun getRepository() = DataRepository(getLocalDataManager(), getRemoteDataManager())
@@ -28,7 +43,7 @@ class MainApplication : Application() {
             return Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
-                .client(OkHttpClient.Builder().build())
+                .client(provideOkHttpClient())
                 .build()
                 .create(ApiService::class.java)
         }

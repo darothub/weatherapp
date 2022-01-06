@@ -18,23 +18,6 @@ data class WeatherResponse(
     val daily: List<Climate>
 ) : Serializable
 
-data class Current <T>(
-    val dt: Long,
-    val sunrise: Long? = null,
-    val sunset: Long? = null,
-    val temp: T,
-    val feelsLike: T,
-    val pressure: Long,
-    val humidity: Long,
-    val dewPoint: Double,
-    val clouds: Long,
-    val visibility: Long? = null,
-    val windSpeed: Double,
-    val windDeg: Long,
-    val weather: List<Weather>,
-    val windGust: Double? = null
-)
-
 data class Weather(
     val id: Long,
     val main: String,

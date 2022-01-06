@@ -10,7 +10,8 @@ interface ApiService {
         @Query("lat") lat: String,
         @Query("lon") lon: String,
         @Query("exclude") exclude: String,
-        @Query("appid") app_id: String
+        @Query("appid") app_id: String,
+        @Query("units") units: String = "metric"
     ): WeatherResponse
     @GET("onecall?")
     suspend fun getWeatherForeCast(

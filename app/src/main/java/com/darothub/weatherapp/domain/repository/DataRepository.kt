@@ -7,37 +7,40 @@ class DataRepository(
     private val localDataManager: LocalDataManager,
     private val remoteDataManager: RemoteDataManager
 ) {
-    suspend fun saveClimate(weather: WeatherResponse) {
-        localDataManager.saveClimate(weather)
-    }
 
-    suspend fun getLocalClimates(lat: String, lon: String): LiveData<WeatherResponse> {
-        val latQuery = "%${lat.replace(' ', '%')}%"
-        val lonQuery = "%${lon.replace(' ', '%')}%"
-        return localDataManager.getClimates(latQuery, lonQuery)
-    }
-
-    suspend fun getLocalClimateForeCast(lat: String, lon: String): WeatherResponse {
-        val latQuery = "%${lat.replace(' ', '%')}%"
-        val lonQuery = "%${lon.replace(' ', '%')}%"
-        return localDataManager.getClimatesList(latQuery, lonQuery)
-    }
-
-    suspend fun getRemoteClimates(
+    suspend fun getClimateForeCast(
         lat: String,
         lon: String,
         exclude: String,
         app_id: String
     ): WeatherResponse {
-        return remoteDataManager.getWeatherDetails(lat, lon, exclude, app_id)
+        val latQuery = "%${lat.replace(' ', '%')}%"
+        val lonQuery = "%${lon.replace(' ', '%')}%"
+        var data = localDataManager.getClimatesList(latQuery, lonQuery)
+        if (data == null) {
+            data = remoteDataManager.getWeatherDetails(lat, lon, exclude, app_id)
+            localDataManager.saveClimate(data)
+            return data
+        }
+        return data
     }
-    suspend fun getRemoteClimateForecast(
+
+
+    suspend fun getClimateForecastWithDate(
         lat: String,
         lon: String,
         dt: String,
         exclude: String,
         app_id: String
     ): WeatherResponse {
-        return remoteDataManager.getClimateForecast(lat, lon, dt, exclude, app_id)
+        val latQuery = "%${lat.replace(' ', '%')}%"
+        val lonQuery = "%${lon.replace(' ', '%')}%"
+        var data = localDataManager.getClimatesList(latQuery, lonQuery)
+        if (data == null) {
+            data = remoteDataManager.getClimateForecast(lat, lon, dt, exclude, app_id)
+            localDataManager.saveClimate(data)
+            return data
+        }
+        return data
     }
 }
