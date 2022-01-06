@@ -137,7 +137,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                                 val queryRequest = QueryRequest(lat, lng, wr.daily[0].dt.toString(), "minutely", API_KEY)
                                 TabFragment.newInstance(queryRequest)
                             }
-                            else -> MainFragment()
+                            else -> {
+                                val queryRequest = QueryRequest(lat, lng, wr.daily[2].dt.toString(), "minutely", API_KEY)
+                                TabFragment.newInstance(queryRequest)
+                            }
                         }
                     }
 

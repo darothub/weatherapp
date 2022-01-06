@@ -17,9 +17,10 @@ class DataViewHolder(private val binding: ForecastItemLayoutBinding) : RecyclerV
             is Temp -> convertKelvinToCelsius(climate.temp.min)
             else -> 0.0
         }
-
-        val s = SpannableString("$tempInCelsius" + "oC")
-        s.setSpan(SuperscriptSpan(), 5, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        var str = "$tempInCelsius" + "oC"
+        val index = str.indexOf('o')
+        val s = SpannableString(str)
+        s.setSpan(SuperscriptSpan(), index, str.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.apply {
             temp.text = s
             description.text = climate.weather[0].description

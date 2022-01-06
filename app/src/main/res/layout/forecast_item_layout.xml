@@ -13,7 +13,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:text="---"
-        android:textSize="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:textSize="@dimen/_20sdp"
         />
     <TextView
         android:id="@+id/description"

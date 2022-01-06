@@ -1,20 +1,18 @@
 package com.darothub.weatherapp.ui
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.SuperscriptSpan
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.darothub.weatherapp.MainApplication
 import com.darothub.weatherapp.R
 import com.darothub.weatherapp.databinding.FragmentTabBinding
-import com.darothub.weatherapp.helper.convertKelvinToCelsius
 import com.darothub.weatherapp.model.QueryRequest
-import com.darothub.weatherapp.model.Temp
 import com.darotpeacedude.eivom.utils.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,14 +26,21 @@ import kotlinx.coroutines.withContext
  */
 class TabFragment : Fragment(R.layout.fragment_tab) {
     private val binding by viewBinding(FragmentTabBinding::bind)
-    val viewModel by activityViewModels<WeatherViewModel> { WeatherViewModelFactory(MainApplication.getRepository()) }
+    val viewModel by viewModels<WeatherViewModel> { WeatherViewModelFactory(MainApplication.getRepository()) }
     private lateinit var recyclerViewAdapter: DataAdapter
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             val data = getSerializable(ARG_OBJECT) as QueryRequest
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 viewModel.getClimateForecast(data.lat, data.lon, data.dt, data.exclude, data.appid)
                 Log.d("Tab", data.dt.toString())
                 withContext(Dispatchers.Main) {
@@ -43,18 +48,11 @@ class TabFragment : Fragment(R.layout.fragment_tab) {
                         viewLifecycleOwner,
                         { wr ->
                             Log.d("TabWR", wr.toString())
-                            var tempInCelsius = when (wr.current.temp) {
-                                is Double -> convertKelvinToCelsius(wr.current.temp)
-                                is Temp -> convertKelvinToCelsius(wr.current.temp.min)
-                                else -> 0.0
-                            }
-
-                            val s = SpannableString("$tempInCelsius" + "oC")
-                            s.setSpan(SuperscriptSpan(), 5, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                             recyclerViewAdapter = DataAdapter()
                             recyclerViewAdapter.setData(wr.hourly)
                             binding.rcv.adapter = recyclerViewAdapter
                             binding.rcv.layoutManager = LinearLayoutManager(requireContext())
+                            binding.rcv.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
                         }
                     )
                 }
