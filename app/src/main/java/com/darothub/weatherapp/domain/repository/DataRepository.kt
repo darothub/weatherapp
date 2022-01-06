@@ -1,6 +1,5 @@
 package com.darothub.weatherapp.domain.repository
 
-import androidx.lifecycle.LiveData
 import com.darothub.weatherapp.model.WeatherResponse
 
 class DataRepository(
@@ -24,7 +23,6 @@ class DataRepository(
         }
         return data
     }
-
 
     suspend fun getClimateForecastWithDate(
         lat: String,

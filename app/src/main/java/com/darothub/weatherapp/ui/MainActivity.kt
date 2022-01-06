@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     lateinit var adapter: ViewPagerAdapter
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     val viewModel by viewModels<WeatherViewModel> { WeatherViewModelFactory(MainApplication.getRepository()) }
+
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,7 +116,12 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     var str = "$tempInCelsius" + "oC"
                     val indexOfO = str.indexOf('o')
                     val s = SpannableString(str)
-                    s.setSpan(SuperscriptSpan(), indexOfO, str.length - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    s.setSpan(
+                        SuperscriptSpan(),
+                        indexOfO,
+                        str.length - 1,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
                     binding.main.apply {
                         setTextsColorToWhite(temp)
                         setTextsColorToWhite(description)
@@ -128,30 +134,66 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     }
 
                     binding.main.apply {
-                        root.setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.purple_500))
+                        val desc = wr.current.weather[0].description
+                        root.setBackgroundColor(
+                            ContextCompat.getColor(
+                                this@MainActivity,
+                                R.color.purple_500
+                            )
+                        )
                         temp.text = s
-                        description.text = wr.current.weather[0].description
+                        description.text = desc
                         wind.text = "Wind: ${wr.current.windSpeed}m/s"
                         pressure.text = "Pressure: ${wr.current.pressure}hPa"
                         humidity.text = "Humidity: ${wr.current.humidity}%"
-                        sunrise.text = "Sunrise: ${wr.current.sunrise?.let { convertLongToTime(it) }}"
+                        sunrise.text =
+                            "Sunrise: ${wr.current.sunrise?.let { convertLongToTime(it) }}"
                         sunset.text = "Sunset: ${wr.current.sunset?.let { convertLongToTime(it) }}"
                         updateDateTv.text = "Last update: ${convertLongToTime(Date().time)}"
+                        when {
+                            desc.contains("rain", true) -> binding.main.weatherImage.setImageDrawable(
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.rain)
+                            )
+                            desc.contains("sun", true) -> binding.main.weatherImage.setImageDrawable(
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.sunny)
+                            )
+                            desc.contains("sun", true) && desc.contains("cloud", true) -> binding.main.weatherImage.setImageDrawable(
+                                ContextCompat.getDrawable(this@MainActivity, R.drawable.suncloud)
+                            )
+                        }
                     }
 
                     adapter = ViewPagerAdapter(this@MainActivity, 3) { position ->
                         var queryRequest: QueryRequest? = null
                         when (position) {
                             0 -> {
-                                queryRequest = QueryRequest(lat, lng, wr.daily[1].dt.toString(), "minutely", API_KEY)
+                                queryRequest = QueryRequest(
+                                    lat,
+                                    lng,
+                                    wr.daily[1].dt.toString(),
+                                    "minutely",
+                                    API_KEY
+                                )
                                 TabFragment.newInstance(queryRequest)
                             }
                             1 -> {
-                                queryRequest = QueryRequest(lat, lng, wr.daily[2].dt.toString(), "minutely", API_KEY)
+                                queryRequest = QueryRequest(
+                                    lat,
+                                    lng,
+                                    wr.daily[2].dt.toString(),
+                                    "minutely",
+                                    API_KEY
+                                )
                                 TabFragment.newInstance(queryRequest)
                             }
                             else -> {
-                                queryRequest = QueryRequest(lat, lng, wr.daily[3].dt.toString(), "minutely", API_KEY)
+                                queryRequest = QueryRequest(
+                                    lat,
+                                    lng,
+                                    wr.daily[3].dt.toString(),
+                                    "minutely",
+                                    API_KEY
+                                )
                                 TabFragment.newInstance(queryRequest)
                             }
                         }
