@@ -13,6 +13,7 @@ import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.araujo.jordan.excuseme.ExcuseMe
 import com.darothub.weatherapp.MainApplication
@@ -20,6 +21,7 @@ import com.darothub.weatherapp.R
 import com.darothub.weatherapp.databinding.ActivityMainBinding
 import com.darothub.weatherapp.helper.convertKelvinToCelsius
 import com.darothub.weatherapp.helper.convertLongToTime
+import com.darothub.weatherapp.model.QueryRequest
 import com.darothub.weatherapp.model.Temp
 import com.darotpeacedude.eivom.utils.viewBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -49,19 +51,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-
-        adapter = ViewPagerAdapter(this, 3) { position ->
-            TabFragment.newInstance(position + 1)
-        }
-
-        binding.vp.adapter = adapter
-        TabLayoutMediator(binding.mainTabLayout, binding.vp) { tab, position ->
-            when (position) {
-                0 -> tab.text = "Today"
-                1 -> tab.text = "Tomorrow"
-                2 -> tab.text = "Later"
-            }
-        }.attach()
 
         ExcuseMe.couldYouGive(this).permissionFor(
             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
@@ -128,6 +117,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     s.setSpan(SuperscriptSpan(), 5, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                     binding.main.apply {
+                        root.setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.purple_500))
                         temp.text = s
                         description.text = wr.current.weather[0].description
                         wind.text = "Wind: ${wr.current.windSpeed}m/s"
@@ -136,6 +126,30 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                         sunrise.text = "Sunrise: ${wr.current.sunrise?.let { convertLongToTime(it) }}"
                         sunset.text = "Sunset: ${wr.current.sunset?.let { convertLongToTime(it) }}"
                     }
+
+                    adapter = ViewPagerAdapter(this@MainActivity, 3) { position ->
+                        when (position) {
+                            1 -> {
+                                val queryRequest = QueryRequest(lat, lng, wr.daily[1].dt.toString(), "minutely", API_KEY)
+                                TabFragment.newInstance(queryRequest)
+                            }
+                            0 -> {
+                                val queryRequest = QueryRequest(lat, lng, wr.daily[0].dt.toString(), "minutely", API_KEY)
+                                TabFragment.newInstance(queryRequest)
+                            }
+                            else -> MainFragment()
+                        }
+                    }
+
+                    binding.vp.adapter = adapter
+                    TabLayoutMediator(binding.mainTabLayout, binding.vp) { tab, position ->
+                        when (position) {
+                            0 -> tab.text = "Today"
+                            1 -> tab.text = "Tomorrow"
+                            2 -> tab.text = "Later"
+                        }
+                    }.attach()
+                    viewModel.weatherLiveData.removeObservers(this@MainActivity)
                 }
             )
         }

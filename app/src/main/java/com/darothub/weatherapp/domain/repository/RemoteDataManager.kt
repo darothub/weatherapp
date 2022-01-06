@@ -13,4 +13,14 @@ class RemoteDataManager(private val apiService: ApiService) {
     ): WeatherResponse {
         return apiService.getWeatherService(lat, lon, exclude, app_id)
     }
+
+    suspend fun getClimateForecast(
+        lat: String,
+        lon: String,
+        dt: String,
+        exclude: String,
+        app_id: String
+    ): WeatherResponse {
+        return apiService.getWeatherForeCast(lat, lon, dt, exclude, app_id)
+    }
 }

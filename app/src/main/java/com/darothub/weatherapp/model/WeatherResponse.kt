@@ -3,6 +3,7 @@ package com.darothub.weatherapp.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.darothub.weatherapp.data.database.Climate
+import java.io.Serializable
 
 @Entity
 data class WeatherResponse(
@@ -15,7 +16,7 @@ data class WeatherResponse(
     val current: Climate,
     val hourly: List<Climate>,
     val daily: List<Climate>
-)
+) : Serializable
 
 data class Current <T>(
     val dt: Long,

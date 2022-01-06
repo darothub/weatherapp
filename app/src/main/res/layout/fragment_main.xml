@@ -7,95 +7,12 @@
     android:background="@color/purple_500"
     android:padding="@dimen/_20sdp"
     tools:context=".ui.MainFragment">
-    <TextView
-        android:id="@+id/temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="24C"
-        android:textSize="@dimen/_50sdp"
-        />
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/temp"
-        android:textSize="@dimen/_12sdp"
-        android:text="few clouds"
-        />
-
-    <TextView
-        android:id="@+id/wind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description"
-        android:textSize="@dimen/_12sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:text="Wind"
-        />
-    <TextView
-        android:id="@+id/pressure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/wind"
-        android:textSize="@dimen/_12sdp"
-        android:text="pressure"
-        />
-    <TextView
-        android:id="@+id/humidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pressure"
-        android:textSize="@dimen/_12sdp"
-        android:text="humidity"
-        />
-    <TextView
-        android:id="@+id/sunrise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/humidity"
-        android:textSize="@dimen/_12sdp"
-        android:text="sunrise"
-
-        />
-    <TextView
-        android:id="@+id/sunset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sunrise"
-        android:textSize="@dimen/_12sdp"
-        android:text="sunset"
-
-        />
-    <ImageView
-        android:id="@+id/weather_image"
-        android:layout_width="@dimen/_80sdp"
-        android:layout_height="@dimen/_80sdp"
-        android:src="@drawable/cloud"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/update_date_tv"
-        app:layout_constraintVertical_bias=".3"
-        android:layout_marginEnd="@dimen/_30sdp"
-        app:tint="@color/white"
-        />
-    <TextView
-        android:id="@+id/update_date_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="update"
-        app:layout_constraintBottom_toBottomOf="@id/sunset"
-        />
-
-
-
+        tools:listitem="@layout/forecast_item_layout"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

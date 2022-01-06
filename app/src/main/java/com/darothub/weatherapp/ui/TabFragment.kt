@@ -1,16 +1,25 @@
 package com.darothub.weatherapp.ui
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.SuperscriptSpan
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.darothub.weatherapp.MainApplication
 import com.darothub.weatherapp.R
 import com.darothub.weatherapp.databinding.FragmentTabBinding
+import com.darothub.weatherapp.helper.convertKelvinToCelsius
+import com.darothub.weatherapp.model.QueryRequest
+import com.darothub.weatherapp.model.Temp
 import com.darotpeacedude.eivom.utils.viewBinding
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * A simple [Fragment] subclass.
@@ -19,29 +28,46 @@ private const val ARG_PARAM2 = "param2"
  */
 class TabFragment : Fragment(R.layout.fragment_tab) {
     private val binding by viewBinding(FragmentTabBinding::bind)
-
+    val viewModel by activityViewModels<WeatherViewModel> { WeatherViewModelFactory(MainApplication.getRepository()) }
+    private lateinit var recyclerViewAdapter: DataAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-//            binding.tv.text = getInt(ARG_OBJECT).toString()
+            val data = getSerializable(ARG_OBJECT) as QueryRequest
+            CoroutineScope(Dispatchers.Main).launch {
+                viewModel.getClimateForecast(data.lat, data.lon, data.dt, data.exclude, data.appid)
+                Log.d("Tab", data.dt.toString())
+                withContext(Dispatchers.Main) {
+                    viewModel.weatherLiveData.observe(
+                        viewLifecycleOwner,
+                        { wr ->
+                            Log.d("TabWR", wr.toString())
+                            var tempInCelsius = when (wr.current.temp) {
+                                is Double -> convertKelvinToCelsius(wr.current.temp)
+                                is Temp -> convertKelvinToCelsius(wr.current.temp.min)
+                                else -> 0.0
+                            }
+
+                            val s = SpannableString("$tempInCelsius" + "oC")
+                            s.setSpan(SuperscriptSpan(), 5, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            recyclerViewAdapter = DataAdapter()
+                            recyclerViewAdapter.setData(wr.hourly)
+                            binding.rcv.adapter = recyclerViewAdapter
+                            binding.rcv.layoutManager = LinearLayoutManager(requireContext())
+                        }
+                    )
+                }
+            }
         }
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TabFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: Int) =
+        fun newInstance(param1: QueryRequest?) =
             TabFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_OBJECT, param1)
+                    putSerializable(ARG_OBJECT, param1)
                 }
             }
     }

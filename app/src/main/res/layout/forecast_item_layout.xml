@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/_20sdp"
-    android:background="@color/purple_500"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
@@ -61,7 +60,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/humidity"
         android:textSize="@dimen/_12sdp"
-        android:text="---"
+
 
         />
     <TextView
@@ -71,7 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sunrise"
         android:textSize="@dimen/_12sdp"
-        android:text="---"
+
 
         />
     <ImageView
@@ -91,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="---"
+
         app:layout_constraintBottom_toBottomOf="@id/sunset"
         />
 

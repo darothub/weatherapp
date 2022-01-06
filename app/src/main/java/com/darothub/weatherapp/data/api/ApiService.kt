@@ -12,4 +12,12 @@ interface ApiService {
         @Query("exclude") exclude: String,
         @Query("appid") app_id: String
     ): WeatherResponse
+    @GET("onecall?")
+    suspend fun getWeatherForeCast(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("dt") dt: String,
+        @Query("exclude") exclude: String,
+        @Query("appid") app_id: String
+    ): WeatherResponse
 }

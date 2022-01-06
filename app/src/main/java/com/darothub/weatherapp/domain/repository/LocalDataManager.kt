@@ -10,5 +10,6 @@ class LocalDataManager(private val climateDao: ClimateDao) {
     }
     fun getClimates(lat: String, lon: String) = climateDao.getAll(lat, lon)
 
+    suspend fun getClimateForecast(lat: String, lon: String) = climateDao.getAllList(lat, lon)
     suspend fun getClimatesList(lat: String, lon: String) = climateDao.getAllList(lat, lon)
 }

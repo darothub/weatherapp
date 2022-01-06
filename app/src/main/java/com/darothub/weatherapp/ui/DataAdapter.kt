@@ -25,7 +25,7 @@ class DataAdapter : RecyclerView.Adapter<DataViewHolder>() {
     fun setData(data: List<Climate>) {
         val dataDiffUtils = DataDiffUtils(dataList, data)
         val result = DiffUtil.calculateDiff(dataDiffUtils)
-        dataList = data
+        dataList = data.take(5)
         result.dispatchUpdatesTo(this)
     }
 }

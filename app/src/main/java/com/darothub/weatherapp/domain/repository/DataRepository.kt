@@ -11,13 +11,13 @@ class DataRepository(
         localDataManager.saveClimate(weather)
     }
 
-    fun getLocalClimates(lat: String, lon: String): LiveData<WeatherResponse> {
+    suspend fun getLocalClimates(lat: String, lon: String): LiveData<WeatherResponse> {
         val latQuery = "%${lat.replace(' ', '%')}%"
         val lonQuery = "%${lon.replace(' ', '%')}%"
         return localDataManager.getClimates(latQuery, lonQuery)
     }
 
-    suspend fun getLocalClimatesList(lat: String, lon: String): WeatherResponse {
+    suspend fun getLocalClimateForeCast(lat: String, lon: String): WeatherResponse {
         val latQuery = "%${lat.replace(' ', '%')}%"
         val lonQuery = "%${lon.replace(' ', '%')}%"
         return localDataManager.getClimatesList(latQuery, lonQuery)
@@ -30,5 +30,14 @@ class DataRepository(
         app_id: String
     ): WeatherResponse {
         return remoteDataManager.getWeatherDetails(lat, lon, exclude, app_id)
+    }
+    suspend fun getRemoteClimateForecast(
+        lat: String,
+        lon: String,
+        dt: String,
+        exclude: String,
+        app_id: String
+    ): WeatherResponse {
+        return remoteDataManager.getClimateForecast(lat, lon, dt, exclude, app_id)
     }
 }
