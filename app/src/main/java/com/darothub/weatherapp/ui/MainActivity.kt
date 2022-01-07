@@ -86,43 +86,13 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (query != null) {
-            Log.d("Query", query)
-//            val (lat, lng) = getLatLngFromAddress(query.toString())
-//            getLocationWeatherDetails(lat, lng)
             getWeatherData(query)
         }
         return true
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun getLocationWeatherDetails(
-        lat: String,
-        lng: String
-    ) {
-        viewModel.getClimates(lat, lng, "minutely", API_KEY)
-    }
-
     override fun onQueryTextChange(p0: String?): Boolean {
-//        Log.d("Main2", p0.toString())
         return true
-    }
-
-    private fun getLatLngFromAddress(address: String): Pair<String, String> {
-        val geocoder = Geocoder(this, Locale.getDefault())
-        val result = try {
-            val addressList = geocoder.getFromLocationName(address, 1)
-            if (addressList != null) {
-                val singleAddress = addressList[0]
-                val latitude = "%.2f".format(singleAddress.latitude)
-                val longitude = "%.2f".format(singleAddress.longitude)
-                Pair(latitude, longitude)
-            } else {
-                Pair("", "")
-            }
-        } catch (e: Exception) {
-            Pair("", "")
-        }
-        return result
     }
     private fun getAddressFromLatLng(lat: Double, long: Double): String {
         val geocoder = Geocoder(this, Locale.getDefault())

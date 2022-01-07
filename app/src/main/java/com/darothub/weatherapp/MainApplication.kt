@@ -2,15 +2,13 @@ package com.darothub.weatherapp
 
 import android.app.Application
 import com.darothub.weatherapp.data.api.ApiService
-import com.darothub.weatherapp.data.api.baseUrl
 import com.darothub.weatherapp.data.api.baseUrl2
-import com.darothub.weatherapp.data.database.ClimateDao
+import com.darothub.weatherapp.data.database.WeatherDao
 import com.darothub.weatherapp.data.database.WeatherDatabase
 import com.darothub.weatherapp.domain.repository.DataRepository
 import com.darothub.weatherapp.domain.repository.LocalDataManager
 import com.darothub.weatherapp.domain.repository.RemoteDataManager
 import com.google.gson.GsonBuilder
-import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,10 +18,10 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        dao = WeatherDatabase(this).climateDao()
+        dao = WeatherDatabase(this).weatherDao()
     }
     companion object {
-        lateinit var dao: ClimateDao
+        lateinit var dao: WeatherDao
         fun provideLoggingInterceptor(): HttpLoggingInterceptor {
             return HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY

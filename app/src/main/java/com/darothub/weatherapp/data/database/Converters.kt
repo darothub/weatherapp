@@ -9,26 +9,7 @@ import java.util.*
 
 class Converters {
     val gson = Gson()
-    @TypeConverter
-    fun fromClimate(climate: Climate): String {
-        return gson.toJson(climate)
-    }
-    @TypeConverter
-    fun toClimateString(json: String): Climate {
-        val listType: Type = object :
-            TypeToken<Climate>() {}.type
-        return gson.fromJson(json, listType)
-    }
-    @TypeConverter
-    fun fromClimate(weather: List<Climate>): String {
-        return gson.toJson(weather)
-    }
-    @TypeConverter
-    fun toListClimateString(json: String): List<Climate> {
-        val listType: Type = object :
-            TypeToken<List<Climate>?>() {}.type
-        return gson.fromJson(json, listType)
-    }
+
     @TypeConverter
     fun fromCurrent(current: Current): String {
         return gson.toJson(current)
@@ -89,15 +70,5 @@ class Converters {
         val forecast: Type = object :
             TypeToken<Forecast?>() {}.type
         return gson.fromJson(json, forecast)
-    }
-    @TypeConverter
-    fun fromTemp(temp: Temp): String {
-        return gson.toJson(temp)
-    }
-    @TypeConverter
-    fun toTempString(json: String): Temp {
-        val listType: Type = object :
-            TypeToken<Temp?>() {}.type
-        return gson.fromJson(json, listType)
     }
 }
