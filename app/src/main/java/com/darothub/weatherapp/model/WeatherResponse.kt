@@ -78,7 +78,6 @@ data class Location(
     val country: String,
     val lat: Double,
     val lon: Double,
-    val tzID: String,
     val localtimeEpoch: Long,
     val localtime: String
 )

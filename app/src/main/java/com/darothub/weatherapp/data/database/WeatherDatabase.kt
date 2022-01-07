@@ -6,7 +6,7 @@ import com.darothub.weatherapp.model.EasyWeatherResponse
 
 @Database(
     entities = [EasyWeatherResponse::class],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

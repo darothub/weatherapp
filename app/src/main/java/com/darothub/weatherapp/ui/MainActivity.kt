@@ -124,9 +124,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     private fun getWeatherData(locality: String) {
         viewModel.getLocalEasyForecast(locality).observe(this) { easyWeather ->
-
             if (easyWeather == null) {
                 viewModel.getEasyForecast(API_KEY2, locality)
+            } else {
+                observeRequest(UIState.Success(easyWeather))
             }
         }
         viewModel.weatherLiveData.observe(this) { wrState ->
@@ -203,6 +204,12 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             is UIState.Loading -> {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.main.root.visibility = View.GONE
+            }
+            is UIState.Error -> {
+                binding.errorTv.text = wrState.exception.message
+                binding.errorTv.visibility = View.VISIBLE
+                binding.main.root.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
             }
         }
     }
