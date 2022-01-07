@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, UiStat
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (query != null) {
-            getWeatherData(query)
+            getWeatherData(query.replaceFirstChar { it.uppercase() })
         }
         return true
     }
