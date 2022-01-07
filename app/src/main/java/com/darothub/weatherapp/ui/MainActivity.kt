@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, UiStat
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     val viewModel by viewModels<WeatherViewModel> { WeatherViewModelFactory(MainApplication.getRepository()) }
     lateinit var uiStateListener: UiStateListener
+
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,13 +71,16 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, UiStat
                 )
                 getLastLocation()
             } else {
+
                 lifecycleScope.launch {
-                    ExcuseMe.couldYouGive(this@MainActivity).gently(
-                        "Permission Request",
-                        "To be able to get your current location you need to accept this request"
+                    ExcuseMe.couldYouGive(this@MainActivity).please(
+                        explainAgainTitle = "Permission is necessary",
+                        explainAgainExplanation = "The app need this permission to get your location",
+                        showSettingsTitle = "Set permission in Settings",
+                        showSettingsExplanation = "The app will open the settings to change the permission from there"
                     ).permissionFor(
                         Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION
+                        Manifest.permission.ACCESS_FINE_LOCATION,
                     )
                 }
             }
