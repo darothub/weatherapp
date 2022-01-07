@@ -10,7 +10,7 @@ class WeatherViewModel(private val repository: DataRepository) : ViewModel() {
     private val _weatherLiveData = SingleLiveEvent<UIState>()
     var weatherLiveData: SingleLiveEvent<UIState> = _weatherLiveData
 
-    fun getLocalEasyForecast(q: String) = repository.getLocalForecast(q).asLiveData()
+    fun getLocalEasyForecast(q: String) = repository.getLocalForecast(q).asLiveData().distinctUntilChanged()
     fun getEasyForecast(
         key: String,
         q: String,

@@ -8,6 +8,7 @@ import android.os.Looper
 import android.text.SpannableString
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -49,7 +50,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, UiStat
         setContentView(view)
         setTextViewsColor()
         setTopViewBackGroundColor()
-        uiStateListener = this
 
         askForLocationPermission()
     }
@@ -98,8 +98,16 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, UiStat
         val searchView = searchMenu?.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
         searchView.setOnQueryTextListener(this)
-
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_refresh -> {
+                askForLocationPermission()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -160,13 +168,13 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener, UiStat
             is UIState.Success<*> -> {
                 binding.main.root.visibility = View.VISIBLE
                 binding.progressBar.visibility = View.GONE
-                uiStateListener.onSuccess(wrState.data)
+                onSuccess(wrState.data)
             }
             is UIState.Loading -> {
-                uiStateListener.loading()
+                loading()
             }
             is UIState.Error -> {
-                uiStateListener.onError(wrState.exception.message)
+                onError(wrState.exception.message)
             }
         }
     }
