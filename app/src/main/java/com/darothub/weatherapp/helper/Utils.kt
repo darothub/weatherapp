@@ -1,5 +1,8 @@
 package com.darothub.weatherapp.helper
 
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.SuperscriptSpan
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.darothub.weatherapp.R
@@ -15,7 +18,7 @@ fun convertLongToTime(longTime: Long): String {
     val sdf = SimpleDateFormat("hh:mm a", Locale.US)
     return sdf.format(dt)
 }
-fun getLongDate(ts: Long?): String {
+fun convertEpochTimeToStringFormat(ts: Long?): String {
     if (ts == null) return ""
     // Get instance of calendar
     val calendar = Calendar.getInstance(Locale.getDefault())
@@ -27,4 +30,17 @@ fun getLongDate(ts: Long?): String {
 
 fun setTextsColorToWhite(textView: TextView) {
     textView.setTextColor(ContextCompat.getColor(textView.context, R.color.white))
+}
+
+fun convertTempToScientificReading(tempInCelsius: Double): SpannableString {
+    var str = "$tempInCelsius" + "oC"
+    val indexOfO = str.indexOf('o')
+    val s = SpannableString(str)
+    s.setSpan(
+        SuperscriptSpan(),
+        indexOfO,
+        str.length - 1,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+    return s
 }

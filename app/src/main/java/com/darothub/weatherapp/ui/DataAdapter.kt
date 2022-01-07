@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.darothub.weatherapp.data.database.Climate
 import com.darothub.weatherapp.databinding.ForecastItemLayoutBinding
+import com.darothub.weatherapp.model.Hour
 
 class DataAdapter : RecyclerView.Adapter<DataViewHolder>() {
-    private var dataList: List<Climate> = emptyList()
+    private var dataList: List<Hour> = emptyList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
         val binding = ForecastItemLayoutBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -22,7 +22,7 @@ class DataAdapter : RecyclerView.Adapter<DataViewHolder>() {
     }
     override fun getItemCount() = dataList.size
 
-    fun setData(data: List<Climate>) {
+    fun setData(data: List<Hour>) {
         val dataDiffUtils = DataDiffUtils(dataList, data)
         val result = DiffUtil.calculateDiff(dataDiffUtils)
         dataList = data.take(5)
@@ -31,8 +31,8 @@ class DataAdapter : RecyclerView.Adapter<DataViewHolder>() {
 }
 
 class DataDiffUtils(
-    private val oldList: List<Climate>,
-    private val newList: List<Climate>
+    private val oldList: List<Hour>,
+    private val newList: List<Hour>
 ) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
 
@@ -43,6 +43,6 @@ class DataDiffUtils(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].dt == newList[newItemPosition].dt
+        return oldList[oldItemPosition].condition.code == newList[newItemPosition].condition.code
     }
 }

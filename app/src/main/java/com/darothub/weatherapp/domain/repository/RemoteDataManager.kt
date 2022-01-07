@@ -1,6 +1,7 @@
 package com.darothub.weatherapp.domain.repository
 
 import com.darothub.weatherapp.data.api.ApiService
+import com.darothub.weatherapp.model.EasyWeatherResponse
 import com.darothub.weatherapp.model.WeatherResponse
 
 class RemoteDataManager(private val apiService: ApiService) {
@@ -22,5 +23,13 @@ class RemoteDataManager(private val apiService: ApiService) {
         app_id: String
     ): WeatherResponse {
         return apiService.getWeatherForeCast(lat, lon, dt, exclude, app_id)
+    }
+
+    suspend fun getEasyForecast(
+        key: String,
+        q: String,
+        days: Int,
+    ): EasyWeatherResponse {
+        return apiService.getEasyWeatherForeCast(key, q, days)
     }
 }

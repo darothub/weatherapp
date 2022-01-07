@@ -26,6 +26,22 @@ class WeatherViewModel(private val repository: DataRepository) : ViewModel() {
             }
         }
     }
+    fun getLocalEasyForecast(q: String) = repository.getLocalForecast(q).asLiveData()
+    fun getEasyForecast(
+        key: String,
+        q: String,
+        days: Int = 3,
+    ) {
+        _weatherLiveData.postValue(UIState.Loading)
+        viewModelScope.launch {
+            try {
+                val response = repository.getEasyForeCast(key, q, days)
+                _weatherLiveData.postValue(UIState.Success(response))
+            } catch (e: Exception) {
+                _weatherLiveData.postValue(UIState.Error(e))
+            }
+        }
+    }
 
     fun getClimateForecast(
         lat: String?,

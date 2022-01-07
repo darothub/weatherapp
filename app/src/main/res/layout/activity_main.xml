@@ -8,6 +8,7 @@
 
     <include
         android:id="@+id/main"
+        android:visibility="gone"
         layout="@layout/forecast_item_layout"/>
 
     <ProgressBar
@@ -18,7 +19,7 @@
         android:background="@color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/_10sdp"

@@ -3,6 +3,7 @@ package com.darothub.weatherapp
 import android.app.Application
 import com.darothub.weatherapp.data.api.ApiService
 import com.darothub.weatherapp.data.api.baseUrl
+import com.darothub.weatherapp.data.api.baseUrl2
 import com.darothub.weatherapp.data.database.ClimateDao
 import com.darothub.weatherapp.data.database.WeatherDatabase
 import com.darothub.weatherapp.domain.repository.DataRepository
@@ -41,7 +42,7 @@ class MainApplication : Application() {
         fun getRepository() = DataRepository(getLocalDataManager(), getRemoteDataManager())
         private fun getRetrofit(): ApiService {
             return Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(baseUrl2)
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
                 .client(provideOkHttpClient())
                 .build()

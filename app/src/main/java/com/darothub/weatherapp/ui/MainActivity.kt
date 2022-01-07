@@ -5,9 +5,6 @@ import android.annotation.SuppressLint
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.Looper
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.SuperscriptSpan
 import android.util.Log
 import android.view.Menu
 import android.view.View
@@ -16,16 +13,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import coil.load
 import com.araujo.jordan.excuseme.ExcuseMe
 import com.darothub.weatherapp.MainApplication
 import com.darothub.weatherapp.R
 import com.darothub.weatherapp.databinding.ActivityMainBinding
 import com.darothub.weatherapp.helper.convertLongToTime
+import com.darothub.weatherapp.helper.convertTempToScientificReading
 import com.darothub.weatherapp.helper.setTextsColorToWhite
-import com.darothub.weatherapp.model.QueryRequest
-import com.darothub.weatherapp.model.Temp
-import com.darothub.weatherapp.model.UIState
-import com.darothub.weatherapp.model.WeatherResponse
+import com.darothub.weatherapp.model.*
 import com.darotpeacedude.eivom.utils.viewBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -37,6 +33,7 @@ import java.util.*
 
 const val ARG_OBJECT = "object"
 const val API_KEY = "358c550eaa931d17bbe2602e25ec8d72"
+const val API_KEY2 = "a3dcb83d3dca466c9a4155723220501"
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private val binding by viewBinding(ActivityMainBinding::inflate)
@@ -90,8 +87,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (query != null) {
             Log.d("Query", query)
-            val (lat, lng) = getLatLngFromAddress(query.toString())
-            getLocationWeatherDetails(lat, lng)
+//            val (lat, lng) = getLatLngFromAddress(query.toString())
+//            getLocationWeatherDetails(lat, lng)
+            getWeatherData(query)
         }
         return true
     }
@@ -102,118 +100,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         lng: String
     ) {
         viewModel.getClimates(lat, lng, "minutely", API_KEY)
-        viewModel.weatherLiveData.observe(this@MainActivity) { wrState ->
-            when (wrState) {
-                is UIState.Success<*> -> {
-                    binding.main.root.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
-                    val wr = wrState.data as WeatherResponse
-                    var tempInCelsius = when (wr.current.temp) {
-                        is Double -> wr.current.temp
-                        is Temp -> wr.current.temp.min
-                        else -> 0.0
-                    }
-                    var str = "$tempInCelsius" + "oC"
-                    val indexOfO = str.indexOf('o')
-                    val s = SpannableString(str)
-                    s.setSpan(
-                        SuperscriptSpan(),
-                        indexOfO,
-                        str.length - 1,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.main.apply {
-                        setTextsColorToWhite(temp)
-                        setTextsColorToWhite(description)
-                        setTextsColorToWhite(wind)
-                        setTextsColorToWhite(pressure)
-                        setTextsColorToWhite(humidity)
-                        setTextsColorToWhite(sunrise)
-                        setTextsColorToWhite(sunset)
-                        setTextsColorToWhite(updateDateTv)
-                    }
-
-                    binding.main.apply {
-                        val desc = wr.current.weather[0].description
-                        root.setBackgroundColor(
-                            ContextCompat.getColor(
-                                this@MainActivity,
-                                R.color.purple_500
-                            )
-                        )
-                        temp.text = s
-                        description.text = desc
-                        wind.text = "Wind: ${wr.current.windSpeed}m/s"
-                        pressure.text = "Pressure: ${wr.current.pressure}hPa"
-                        humidity.text = "Humidity: ${wr.current.humidity}%"
-                        sunrise.text =
-                            "Sunrise: ${wr.current.sunrise?.let { convertLongToTime(it) }}"
-                        sunset.text = "Sunset: ${wr.current.sunset?.let { convertLongToTime(it) }}"
-                        updateDateTv.text = "Last update: ${convertLongToTime(Date().time)}"
-                        when {
-                            desc.contains("rain", true) -> binding.main.weatherImage.setImageDrawable(
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.rain)
-                            )
-                            desc.contains("sun", true) -> binding.main.weatherImage.setImageDrawable(
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.sunny)
-                            )
-                            desc.contains("sun", true) && desc.contains("cloud", true) -> binding.main.weatherImage.setImageDrawable(
-                                ContextCompat.getDrawable(this@MainActivity, R.drawable.suncloud)
-                            )
-                        }
-                    }
-
-                    adapter = ViewPagerAdapter(this@MainActivity, 3) { position ->
-                        var queryRequest: QueryRequest? = null
-                        when (position) {
-                            0 -> {
-                                queryRequest = QueryRequest(
-                                    lat,
-                                    lng,
-                                    wr.daily[1].dt.toString(),
-                                    "minutely",
-                                    API_KEY
-                                )
-                                TabFragment.newInstance(queryRequest)
-                            }
-                            1 -> {
-                                queryRequest = QueryRequest(
-                                    lat,
-                                    lng,
-                                    wr.daily[2].dt.toString(),
-                                    "minutely",
-                                    API_KEY
-                                )
-                                TabFragment.newInstance(queryRequest)
-                            }
-                            else -> {
-                                queryRequest = QueryRequest(
-                                    lat,
-                                    lng,
-                                    wr.daily[3].dt.toString(),
-                                    "minutely",
-                                    API_KEY
-                                )
-                                TabFragment.newInstance(queryRequest)
-                            }
-                        }
-                    }
-
-                    binding.vp.adapter = adapter
-                    TabLayoutMediator(binding.mainTabLayout, binding.vp) { tab, position ->
-                        when (position) {
-                            0 -> tab.text = "Today"
-                            1 -> tab.text = "Tomorrow"
-                            2 -> tab.text = "Later"
-                        }
-                    }.attach()
-                }
-                is UIState.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.main.root.visibility = View.GONE
-                }
-            }
-        }
     }
 
     override fun onQueryTextChange(p0: String?): Boolean {
@@ -238,15 +124,115 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
         return result
     }
-
+    private fun getAddressFromLatLng(lat: Double, long: Double): String {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val result = try {
+            val addressList = geocoder.getFromLocation(lat, long, 1)
+            if (addressList != null) {
+                val singleAddress = addressList[0]
+                val locality = singleAddress.locality.replace(" ", "")
+                Log.d("ADDRESS", "$singleAddress $locality")
+                singleAddress.locality
+            } else {
+                "null"
+            }
+        } catch (e: Exception) {
+            e.message
+        }
+        return result as String
+    }
     @SuppressLint("MissingPermission")
     fun getLastLocation() {
         mFusedLocationClient?.lastLocation?.addOnSuccessListener { location ->
             Log.d("Main", "lat $location")
             if (location != null) {
-                val lat = location.latitude.toString()
-                val lon = location.longitude.toString()
-                getLocationWeatherDetails(lat, lon)
+                val locality = getAddressFromLatLng(location.latitude, location.longitude)
+                getWeatherData(locality)
+            }
+        }
+    }
+
+    private fun getWeatherData(locality: String) {
+        viewModel.getLocalEasyForecast(locality).observe(this) { easyWeather ->
+
+            if (easyWeather == null) {
+                viewModel.getEasyForecast(API_KEY2, locality)
+            }
+        }
+        viewModel.weatherLiveData.observe(this) { wrState ->
+            if (wrState != null) observeRequest(wrState)
+        }
+    }
+
+    private fun observeRequest(wrState: UIState) {
+        when (wrState) {
+            is UIState.Success<*> -> {
+                binding.main.root.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.GONE
+                val wr = wrState.data as EasyWeatherResponse
+                var tempInCelsius = wr.current.tempC
+                val s = convertTempToScientificReading(tempInCelsius)
+                binding.main.apply {
+                    setTextsColorToWhite(temp)
+                    setTextsColorToWhite(description)
+                    setTextsColorToWhite(wind)
+                    setTextsColorToWhite(pressure)
+                    setTextsColorToWhite(humidity)
+                    setTextsColorToWhite(sunrise)
+                    setTextsColorToWhite(sunset)
+                    setTextsColorToWhite(updateDateTv)
+                }
+
+                binding.main.apply {
+                    val desc = wr.current.condition.text
+                    root.setBackgroundColor(
+                        ContextCompat.getColor(
+                            this@MainActivity,
+                            R.color.purple_500
+                        )
+                    )
+                    temp.text = s
+                    description.text = desc
+                    val icon = "https:" + wr.current.condition.icon
+                    Log.d("ICON", icon)
+                    binding.main.weatherImage.load(icon)
+                    wind.text = "Wind: ${wr.current.windMph}m/s"
+                    pressure.text = "Pressure: ${wr.current.pressureIn}hPa"
+                    humidity.text = "Humidity: ${wr.current.humidity}%"
+                    sunrise.text =
+                        "Sunrise: ${wr.forecast.forecastday[0].astro.sunrise}"
+                    sunset.text = "Sunset: ${wr.forecast.forecastday[0].astro.sunset}"
+                    val lastUpdated = convertLongToTime(wr.current.lastUpdatedEpoch)
+                    updateDateTv.text = "Last update: $lastUpdated"
+                }
+
+                adapter = ViewPagerAdapter(this@MainActivity, 3) { position ->
+                    val listOfDays = wr.forecast.forecastday
+                    when (position) {
+                        0 -> {
+                            TabFragment.newInstance(listOfDays[0].hour)
+                        }
+                        1 -> {
+                            TabFragment.newInstance(listOfDays[1].hour)
+                        }
+                        else -> {
+                            TabFragment.newInstance(listOfDays[2].hour)
+                        }
+                    }
+                }
+
+                binding.vp.adapter = adapter
+                TabLayoutMediator(binding.mainTabLayout, binding.vp) { tab, position ->
+                    when (position) {
+                        0 -> tab.text = "Today"
+                        1 -> tab.text = "Tomorrow"
+                        2 -> tab.text = "Later"
+                    }
+                }.attach()
+            }
+            is UIState.Loading -> {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.main.root.visibility = View.GONE
             }
         }
     }

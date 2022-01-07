@@ -2,11 +2,12 @@ package com.darothub.weatherapp.data.database
 
 import android.content.Context
 import androidx.room.*
+import com.darothub.weatherapp.model.EasyWeatherResponse
 import com.darothub.weatherapp.model.WeatherResponse
 
 @Database(
-    entities = [WeatherResponse::class],
-    version = 2,
+    entities = [EasyWeatherResponse::class, WeatherResponse::class],
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
