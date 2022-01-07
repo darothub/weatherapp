@@ -32,6 +32,12 @@ fun setTextsColorToWhite(textView: TextView) {
     textView.setTextColor(ContextCompat.getColor(textView.context, R.color.white))
 }
 
+fun setTextViewsColor(color: Int, vararg textView: TextView) {
+    for (tv in textView) {
+        tv.setTextColor(ContextCompat.getColor(tv.context, color))
+    }
+}
+
 fun convertTempToScientificReading(tempInCelsius: Double): SpannableString {
     var str = "$tempInCelsius" + "oC"
     val indexOfO = str.indexOf('o')

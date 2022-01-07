@@ -85,7 +85,6 @@
         app:layout_constraintBottom_toTopOf="@id/update_date_tv"
         app:layout_constraintVertical_bias=".3"
         android:layout_marginEnd="@dimen/_30sdp"
-        app:tint="@color/white"
         />
     <TextView
         android:id="@+id/update_date_tv"
